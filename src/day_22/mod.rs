@@ -1,3 +1,4 @@
+#![allow(unused_imports)]
 use crate::util::file_reader::to_string_vector;
 
 pub fn run_day_22() {
