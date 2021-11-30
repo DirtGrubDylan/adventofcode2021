@@ -1,5 +1,4 @@
 use std::fs;
-use std::io::{BufRead, BufReader};
 
 pub fn to_string_vector(file_name: &str) -> Result<Vec<String>, String> {
     Ok(fs::read_to_string(file_name)
@@ -33,6 +32,6 @@ mod tests {
     #[test]
     #[should_panic]
     fn test_to_string_vector_error() {
-        to_string_vector("test_inputs/day_100000000.txt");
+        let _result = to_string_vector("test_inputs/day_100000000.txt");
     }
 }
