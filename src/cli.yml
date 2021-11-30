@@ -1,0 +1,12 @@
+name: Advent of Code 2021
+version: "1.0"
+author: Dylan Hicks <dirtgrub.dylanhicks@gmail.com>
+about: Does awesome things
+args:
+        - day:
+                short: d
+                long: day
+                value_name: INT [1-25]
+                help: Determines which day to run
+                required: true
+                takes_value: true
