@@ -71,6 +71,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::collections::HashMap;
 
     const EPSILON: f64 = 1e-10;
 
@@ -108,5 +109,19 @@ mod tests {
         let result = first.add(&second);
 
         assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_hash() {
+        let mut map = HashMap::new();
+
+        let first = Point2d::new(3, 4);
+        let second = Point2d::new(3, 4);
+
+        map.entry(first).or_insert(1);
+
+        map.entry(second).and_modify(|x| *x += 1).or_insert(-666);
+
+        assert_eq!(*map.get(&second).unwrap(), 2);
     }
 }
