@@ -10,7 +10,7 @@ pub struct LanternFish {
 }
 
 impl LanternFish {
-    pub fn new(days_until_spawn: i32) -> LanternFish {
+    pub fn from_days_until_spawn(days_until_spawn: i32) -> LanternFish {
         LanternFish::spawn(days_until_spawn - 8)
     }
 
@@ -18,38 +18,27 @@ impl LanternFish {
         LanternFish { day_born }
     }
 
-    pub fn get_number_of_relatives_created_by_day(
+    pub fn get_number_of_spawn_created_by_day(
         &self,
         end_day: i32,
-        born_day_to_number_of_spawn: &mut HashMap<i32, u64>,
+        spawn_day_to_number_of_spawn: &mut HashMap<i32, u64>,
     ) -> u64 {
-        if born_day_to_number_of_spawn.contains_key(&self.day_born) {
-            return *born_day_to_number_of_spawn.get(&self.day_born).unwrap();
+        if let Some(&result) = spawn_day_to_number_of_spawn.get(&self.day_born) {
+            return result;
         }
 
-        let number_of_spawn =
-            self.get_number_of_spawn_from_birth(end_day, born_day_to_number_of_spawn);
-
-        born_day_to_number_of_spawn.insert(self.day_born, number_of_spawn);
-
-        number_of_spawn
-    }
-
-    fn get_number_of_spawn_from_birth(
-        &self,
-        end_day: i32,
-        born_day_to_number_of_spawn: &mut HashMap<i32, u64>,
-    ) -> u64 {
         let mut result = 0;
 
         let spawn_day_start = self.day_born + BIRTH_COOLDOWN + BIRTH_CYCLE;
 
         for spawn_day in (spawn_day_start..=end_day).step_by(BIRTH_CYCLE_STEP) {
             let number_of_spawn = LanternFish::spawn(spawn_day)
-                .get_number_of_relatives_created_by_day(end_day, born_day_to_number_of_spawn);
+                .get_number_of_spawn_created_by_day(end_day, spawn_day_to_number_of_spawn);
 
             result += 1 + number_of_spawn;
         }
+
+        spawn_day_to_number_of_spawn.insert(self.day_born, result);
 
         result
     }
@@ -57,16 +46,16 @@ impl LanternFish {
 
 pub fn get_lanternfish_population_created_in_days(initial_fish: &[LanternFish], days: i32) -> u64 {
     let mut result = 0;
-    let mut born_day_to_number_of_spawn: HashMap<i32, u64> = HashMap::new();
+    let mut spawn_day_to_number_of_spawn: HashMap<i32, u64> = HashMap::new();
 
-    for fish in initial_fish.iter() {
-        let spawn = if born_day_to_number_of_spawn.contains_key(&fish.day_born) {
-            *born_day_to_number_of_spawn.get(&fish.day_born).unwrap()
+    for fish in initial_fish {
+        let spawn = if let Some(&result) = spawn_day_to_number_of_spawn.get(&fish.day_born) {
+            result
         } else {
             let result =
-                fish.get_number_of_relatives_created_by_day(days, &mut born_day_to_number_of_spawn);
+                fish.get_number_of_spawn_created_by_day(days, &mut spawn_day_to_number_of_spawn);
 
-            born_day_to_number_of_spawn.insert(fish.day_born, result);
+            spawn_day_to_number_of_spawn.insert(fish.day_born, result);
 
             result
         };
@@ -85,7 +74,7 @@ pub fn get_initial_fish(input: &str) -> Vec<LanternFish> {
                 .parse()
                 .expect(&format!("Could not parse u64: {}", split))
         })
-        .map(|days_until_spawn| LanternFish::new(days_until_spawn))
+        .map(|days_until_spawn| LanternFish::from_days_until_spawn(days_until_spawn))
         .collect()
 }
 
@@ -100,13 +89,13 @@ mod tests {
     fn test_lanternfish_new() {
         let expected = LanternFish { day_born: -5 };
 
-        let result = LanternFish::new(3);
+        let result = LanternFish::from_days_until_spawn(3);
 
         assert_eq!(result, expected);
     }
 
     #[test]
-    fn test_lanternfish_get_number_of_relatives_created_by_day_zero() {
+    fn test_lanternfish_get_number_of_spawn_created_by_day_zero() {
         let mut hashmap = HashMap::new();
 
         let test_fish_0 = LanternFish { day_born: 10 };
@@ -115,9 +104,9 @@ mod tests {
 
         let expected = 0;
 
-        let result_0 = test_fish_0.get_number_of_relatives_created_by_day(18, &mut hashmap);
-        let result_1 = test_fish_1.get_number_of_relatives_created_by_day(18, &mut hashmap);
-        let result_2 = test_fish_2.get_number_of_relatives_created_by_day(18, &mut hashmap);
+        let result_0 = test_fish_0.get_number_of_spawn_created_by_day(18, &mut hashmap);
+        let result_1 = test_fish_1.get_number_of_spawn_created_by_day(18, &mut hashmap);
+        let result_2 = test_fish_2.get_number_of_spawn_created_by_day(18, &mut hashmap);
 
         assert_eq!(result_0, expected);
         assert_eq!(result_1, expected);
@@ -125,7 +114,7 @@ mod tests {
     }
 
     #[test]
-    fn test_lanternfish_get_number_of_relatives_created_by_day_non_zero() {
+    fn test_lanternfish_get_number_of_spawn_created_by_day_non_zero() {
         let mut hashmap = HashMap::new();
 
         let test_fish_0 = LanternFish::spawn(-5);
@@ -136,9 +125,9 @@ mod tests {
         let expected_1 = 1;
         let expected_2 = 6;
 
-        let result_0 = test_fish_0.get_number_of_relatives_created_by_day(18, &mut hashmap);
-        let result_1 = test_fish_1.get_number_of_relatives_created_by_day(18, &mut hashmap);
-        let result_2 = test_fish_2.get_number_of_relatives_created_by_day(18, &mut hashmap);
+        let result_0 = test_fish_0.get_number_of_spawn_created_by_day(18, &mut hashmap);
+        let result_1 = test_fish_1.get_number_of_spawn_created_by_day(18, &mut hashmap);
+        let result_2 = test_fish_2.get_number_of_spawn_created_by_day(18, &mut hashmap);
 
         assert_eq!(result_0, expected_0);
         assert_eq!(result_1, expected_1);
@@ -149,7 +138,7 @@ mod tests {
     fn test_get_lanternfish_population_created_in_days() {
         let initial_fish: Vec<LanternFish> = TEST_DATA
             .iter()
-            .map(|&days_until_spawn| LanternFish::new(days_until_spawn))
+            .map(|&days_until_spawn| LanternFish::from_days_until_spawn(days_until_spawn))
             .collect();
 
         let expected_0 = 26;
@@ -169,7 +158,7 @@ mod tests {
     fn test_get_initial_fish() {
         let expected: Vec<LanternFish> = TEST_DATA
             .iter()
-            .map(|&days_until_spawn| LanternFish::new(days_until_spawn))
+            .map(|&days_until_spawn| LanternFish::from_days_until_spawn(days_until_spawn))
             .collect();
 
         let result = get_initial_fish(TEST_DATA_STR);
