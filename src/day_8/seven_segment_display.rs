@@ -169,15 +169,15 @@ impl Display {
 
         let segment_b_and_d_wires: HashSet<Wire> = wires_for_4
             .iter()
+            .copied()
             .filter(|wire| !wires_for_1.contains(wire))
-            .map(|wire| wire.clone())
             .collect();
 
         let segment_e_and_g_wires: HashSet<Wire> = wires_for_8
             .iter()
+            .copied()
             .filter(|wire| !wires_for_4.contains(wire))
             .filter(|wire| !wires_for_7.contains(wire))
-            .map(|wire| wire.clone())
             .collect();
 
         // only handle the 6 segment numbers (0, 6, 9)
