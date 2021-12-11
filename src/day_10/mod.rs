@@ -1,8 +1,6 @@
 #![allow(unused_imports)]
 mod syntax_checker;
 
-use std::os::windows::fs::symlink_file;
-
 use crate::util::file_reader::to_string_vector;
 use syntax_checker::SyntaxChecker;
 
