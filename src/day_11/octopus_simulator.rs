@@ -136,8 +136,6 @@ impl Iterator for OctopusFlashSimulator {
 
 #[cfg(test)]
 mod tests {
-    use std::result;
-
     use super::*;
 
     const TEST_SMALL_DATA: [&str; 5] = ["11111", "19991", "19191", "19991", "11111"];
