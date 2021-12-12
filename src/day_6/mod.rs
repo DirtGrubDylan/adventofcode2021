@@ -1,10 +1,6 @@
-#![allow(unused_imports)]
-
 mod lanternfish;
 
 use crate::util::file_reader::to_string_vector;
-
-use lanternfish::LanternFish;
 
 pub fn run_day_6() {
     let file_input = to_string_vector("inputs/day_6.txt").unwrap();
