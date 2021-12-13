@@ -1,4 +1,3 @@
-#![allow(unused_imports)]
 mod seven_segment_display;
 
 use crate::util::file_reader::to_string_vector;

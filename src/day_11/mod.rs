@@ -1,4 +1,3 @@
-#![allow(unused_imports)]
 mod octopus_simulator;
 
 use crate::util::file_reader::to_string_vector;

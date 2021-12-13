@@ -1,9 +1,6 @@
-#![allow(unused_imports)]
 mod crab_submarine;
 
 use crate::util::file_reader::to_string_vector;
-
-use crab_submarine::CrabSubmarine;
 
 pub fn run_day_7() {
     let file_input = to_string_vector("inputs/day_7.txt").unwrap();

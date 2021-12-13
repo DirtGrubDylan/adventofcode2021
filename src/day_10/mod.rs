@@ -1,4 +1,3 @@
-#![allow(unused_imports)]
 mod syntax_checker;
 
 use crate::util::file_reader::to_string_vector;

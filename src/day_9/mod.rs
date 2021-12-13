@@ -1,4 +1,3 @@
-#![allow(unused_imports)]
 mod smoke_basin;
 
 use crate::util::file_reader::to_string_vector;
